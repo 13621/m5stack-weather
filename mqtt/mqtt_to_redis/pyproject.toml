@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "mqtt-to-redis"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+paho-mqtt = "^2.0.0"
+redis = "^5.0.2"
+
+[tool.poetry.scripts]
+myqtt_to_redis = 'src.mqtt_to_redis:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "mqtt-dummy-publisher"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+paho-mqtt = "^2.0.0"
+
+[tool.poetry.scripts]
+mqtt_dummy_publisher = 'src.mqtt_dummy_publisher:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
