@@ -13,11 +13,15 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        lib = pkgs.lib;
         p2nix = poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
+
+        source = pkgs.copyPathToStore (lib.cleanSource ./.);
+        python_with_gunicorn = pkgs.python3.withPackages(ps: [ ps.gunicorn ]);
       in
       {
-        packages = {
-          myapp = p2nix.mkPoetryApplication { 
+        packages = rec {
+          myapp = p2nix.mkPoetryApplication {
             projectDir = self;
             overrides = p2nix.overrides.withDefaults (self: super: {
               paho-mqtt = super.paho-mqtt.overridePythonAttrs (old: {
@@ -26,14 +30,28 @@
             });
           };
           default = self.packages.${system}.myapp;
+
+          poetryenv = p2nix.mkPoetryEnv {
+            projectDir = self;
+            overrides = p2nix.overrides.withDefaults (self: super: {
+              paho-mqtt = super.paho-mqtt.overridePythonAttrs (old: {
+                buildInputs = (old.buildInputs or []) ++ [ super.hatchling ];
+              });
+            });
+          };
+
+          dockerImage = pkgs.dockerTools.buildLayeredImage {
+            name = "cot_webserver_prod";
+            tag = "latest";
+            contents = [ source poetryenv pkgs.bash ];
+            #config = {
+            #  Cmd = [ "${pkgs.bash} -c ${poetryenv}/bin/gunicorn --workers=4 src.app:main" ];
+            #};
+          };
         };
 
         devShells.default = pkgs.mkShell {
-          #packages = [ pkgs.bashInteractive pkgs.python3 pkgs.poetry ];
-          #shellHook = ''
-          #  export LD_LIBRARY_PATH=${pkgs.gcc-unwrapped}
-          #'';
-          inputsFrom = [ self.packages.${system}.myapp ];
+          inputsFrom = [ self.packages.${system}.default ];
           packages = [ pkgs.poetry ];
         };
       });

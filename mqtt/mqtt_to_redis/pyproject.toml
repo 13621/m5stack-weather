@@ -12,7 +12,7 @@ paho-mqtt = "^2.0.0"
 redis = "^5.0.2"
 
 [tool.poetry.scripts]
-myqtt_to_redis = 'src.mqtt_to_redis:main'
+mqtt_to_redis = 'src.mqtt_to_redis:main'
 
 [build-system]
 requires = ["poetry-core"]

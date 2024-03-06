@@ -16,7 +16,7 @@
         p2nix = poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
       in
       {
-        packages = {
+        packages = rec {
           myapp = p2nix.mkPoetryApplication { 
             projectDir = self;
             overrides = p2nix.overrides.withDefaults (self: super: {
@@ -26,6 +26,15 @@
             });
           };
           default = self.packages.${system}.myapp;
+
+          dockerImage = pkgs.dockerTools.buildLayeredImage {
+            name = "mqtt_dummy_publisher";
+            tag = "latest";
+            contents = [ default ];
+            config = {
+              Entrypoint = [ "/bin/mqtt_dummy_publisher" ];
+            };
+          };
         };
 
         devShells.default = pkgs.mkShell {

@@ -1,0 +1,11 @@
+{
+	admin off
+}
+
+$CADDY_HOSTNAME {
+	tls internal
+	handle {
+		encode zstd gzip
+		reverse_proxy webserver:8000
+	}
+}

@@ -1,5 +1,6 @@
 import json
 import io
+import os
 import base64
 
 from flask import Flask, render_template
@@ -7,12 +8,12 @@ from .redis_client import RedisClient
 from .weather_calc import WeatherForecast
 
 
-app = Flask('app')
+app = Flask(__name__)
 
 
 @app.route('/')
 def root():
-    cl = RedisClient('localhost')
+    cl = RedisClient(os.environ.get("REDIS_HOSTNAME"), int(os.environ.get("REDIS_PORT")))
 
     curtemp = cl.get_current_temperature()
     curpres = cl.get_current_pressure()
@@ -28,5 +29,8 @@ def root():
 
     return render_template('weather.html', pres=curpres, temp=curtemp, forecast=forecast, zambretti_number=zambretti_number, plot=graph_rgb_b64)
 
-if __name__ == '__main__':
+def main():
     app.run()
+
+if __name__ == '__main__':
+    main()
