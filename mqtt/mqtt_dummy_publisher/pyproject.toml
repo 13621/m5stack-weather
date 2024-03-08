@@ -9,6 +9,7 @@ packages = [{include = "src"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 paho-mqtt = "^2.0.0"
+numpy = "^1.26.4"
 
 [tool.poetry.scripts]
 mqtt_dummy_publisher = 'src.mqtt_dummy_publisher:main'

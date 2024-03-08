@@ -17,11 +17,10 @@
         p2nix = poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
 
         source = pkgs.copyPathToStore (lib.cleanSource ./.);
-        python_with_gunicorn = pkgs.python3.withPackages(ps: [ ps.gunicorn ]);
       in
       {
         packages = rec {
-          myapp = p2nix.mkPoetryApplication {
+          app = p2nix.mkPoetryApplication {
             projectDir = self;
             overrides = p2nix.overrides.withDefaults (self: super: {
               paho-mqtt = super.paho-mqtt.overridePythonAttrs (old: {
@@ -29,7 +28,6 @@
               });
             });
           };
-          default = self.packages.${system}.myapp;
 
           poetryenv = p2nix.mkPoetryEnv {
             projectDir = self;
@@ -44,10 +42,12 @@
             name = "cot_webserver_prod";
             tag = "latest";
             contents = [ source poetryenv pkgs.bash ];
-            #config = {
-            #  Cmd = [ "${pkgs.bash} -c ${poetryenv}/bin/gunicorn --workers=4 src.app:main" ];
-            #};
+            config = {
+              Cmd = "gunicorn --workers=4 src.app:main";
+            };
           };
+
+          default = self.packages.${system}.app;
         };
 
         devShells.default = pkgs.mkShell {

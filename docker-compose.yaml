@@ -33,7 +33,7 @@ services:
       MQTT_PASSWORD: ${MQTT_PASSWORD}
 
   webserver:
-    image: cot_webserver_prod
+    image: cot_webserver_prod:latest
     restart: unless-stopped
     depends_on:
       - redis

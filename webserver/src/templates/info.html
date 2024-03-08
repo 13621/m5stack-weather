@@ -12,13 +12,27 @@
 		</header>
 		<div id="forecast">
 			<p>Forecast: {{ forecast }} (Zambretti number: {{ zambretti_number }})</p>
+			<table id="zambrettitable">
+				<tr>
+					<th>Pressure trend</th>
+					<th>Zambretti number</th>
+					<th>Forecast</th>
+				</tr>
+				{% for table_entry in zambretti_table %}
+				<tr>
+					{% for field in table_entry %}
+					<td>{{ field }}</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</table>
 		</div>
 		<div id="plotdiv">
 			<img id="plot" src="data:image/png;base64,{{ plot }}"/>
 		</div>
 		<div id="cur_values">
-			<p>Current Temperature: {{ temp }} °C</p>
-			<p>Current Pressure: {{ pres }} mbar</p>
+			<p>Current Temperature: {{ temp }} °K</p>
+			<p>Current Pressure (at sea level): {{ pres }} mbar</p>
 		</div>
 	</body>
 </html>

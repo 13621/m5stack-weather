@@ -60,8 +60,9 @@ class WeatherForecast:
     def __init__(self, elevation: int, temperature: int, pressure_series: list[tuple[int, float]]):
         self.elevation = elevation
         self.temperature = self._get_temp_kelvin(temperature)
+        self.pressure = pressure_series[-1][1]
         self.pressure_series = pressure_series
-        self.pressure_sealevel = self._get_pres_sealevel(self.pressure_series[-1][1], self.temperature, self.elevation)
+        self.pressure_sealevel = self._get_pres_sealevel(self.pressure, self.temperature, self.elevation)
 
 
     @staticmethod
@@ -103,21 +104,23 @@ class WeatherForecast:
         return output.getvalue()
 
     def get_pressure_trend(self) -> str:
-        fc = np.poly1d(self.pressure_linear_regressed_function_coefs())
+        coefs = self.pressure_linear_regressed_function_coefs()
+        print(coefs)
+        fc = np.poly1d(coefs)
         first_val = fc(self.pressure_series[0][1])
         last_val = fc(self.pressure_series[-1][1])
 
         diff = last_val - first_val
 
 
-        if self.pressure_sealevel < 1050 and self.pressure_sealevel > 985 and diff <= -1.6:
+        if self.pressure_sealevel < 1050 and self.pressure_sealevel > 985 and coefs[0] < 0:
             # between values and fall of 1.6 mbar
             return 'falling'
 
-        if self.pressure_sealevel < 1030 and self.pressure_sealevel > 947 and diff >= 1.6:
+        if self.pressure_sealevel < 1030 and self.pressure_sealevel > 947 and coefs[0] > 0:
             return 'rising'
 
-        if self.pressure_sealevel < 1033 and self.pressure_sealevel > 960:
+        if self.pressure_sealevel < 1033 and self.pressure_sealevel > 960:# and (diff < 1.6 or diff > -1.6):
             return 'steady'
 
         return 'unknown'

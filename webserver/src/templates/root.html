@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+
+	<head>
+		<title>Weather forecast</title>
+    		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+	</head>
+
+	<body>
+		<header>
+			<h1>Weather forecast</h1>
+		</header>
+		<div id="forecast">
+			<p>Forecast: <b>{{ forecast }}</b> <small><a href="{{ url_for('info') }}">More info</a></small></p>
+		</div>
+		<div id="valuetable">
+			<table id="values">
+				<tr>
+					<td>Current temperature:</td>
+					<td>{{ temp }} °C</td>
+				</tr>
+				<tr>
+					<td>Current pressure:</td>
+					<td>{{ pres }} mbar</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>
