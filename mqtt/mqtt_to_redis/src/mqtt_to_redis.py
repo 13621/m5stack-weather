@@ -13,13 +13,12 @@ def on_connect(client, userdata, flags, rc, *args):
 
 def on_message(client, userdata, msg, timeseries, *args):
     current_unix_timestamp = time.time()
-    print("received", msg.payload, "in topic", msg.topic)
     
     ts_key = msg.topic.split('/')[1]
     value = float(msg.payload)
 
     timeseries.add(ts_key, "*", value, duplicate_policy='LAST')
-    print("added", timeseries.get(ts_key), "to Redis")
+    #print("added", timeseries.get(ts_key), "to Redis")
 
 
 def main():
@@ -41,7 +40,7 @@ def main():
     client.username_pw_set(username='testuser',
                            password='m8zjQgeXw$62Pbz8zvWFAUrpcatkTB^3f$pLAma%Erh7&q*M')
 
-    print("connecting...")
+    #print("connecting...")
     client.connect(str(os.environ.get("MQTT_HOSTNAME")))
 
     client.loop_forever()

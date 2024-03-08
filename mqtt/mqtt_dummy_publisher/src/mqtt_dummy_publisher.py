@@ -37,7 +37,7 @@ def main():
         payloads = (randint(-5, 30), proj_pressure)
         for i, t in enumerate(topics):
             client.publish(t, payloads[i])
-            print("published", payloads[i], "in topic", t)
+            #print("published", payloads[i], "in topic", t)
         time.sleep(randint(0, 2))
 
 

@@ -89,7 +89,6 @@ class WeatherForecast:
         ax.scatter(x, y, s=1)
         # regression line
         xseq = np.arange(x[0], x[-1], 1000)
-        #ax.plot(xseq, self.pressure_linear_regressed_function(xseq))
         fc = np.poly1d(self.pressure_linear_regressed_function_coefs())
         ax.plot(xseq, fc(xseq), c=(1.0, 0.0, 0.0))
 
@@ -103,21 +102,15 @@ class WeatherForecast:
 
         return output.getvalue()
 
+
     def get_pressure_trend(self) -> str:
-        coefs = self.pressure_linear_regressed_function_coefs()
-        print(coefs)
-        fc = np.poly1d(coefs)
-        first_val = fc(self.pressure_series[0][1])
-        last_val = fc(self.pressure_series[-1][1])
+        diff = self.pressure_linear_regressed_function_coefs()[0] *3*60*60*1000 # slope of function over 3 hours
 
-        diff = last_val - first_val
-
-
-        if self.pressure_sealevel < 1050 and self.pressure_sealevel > 985 and coefs[0] < 0:
+        if self.pressure_sealevel < 1050 and self.pressure_sealevel > 985 and diff <= -1.6:
             # between values and fall of 1.6 mbar
             return 'falling'
 
-        if self.pressure_sealevel < 1030 and self.pressure_sealevel > 947 and coefs[0] > 0:
+        if self.pressure_sealevel < 1030 and self.pressure_sealevel > 947 and diff >= 1.6:
             return 'rising'
 
         if self.pressure_sealevel < 1033 and self.pressure_sealevel > 960:# and (diff < 1.6 or diff > -1.6):
@@ -133,3 +126,4 @@ class WeatherForecast:
         forecast = ZAMBRETTI_VALUES[self.get_pressure_trend()][zambretti_number]
 
         return forecast, zambretti_number
+

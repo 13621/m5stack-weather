@@ -264,6 +264,23 @@ div.fancyPositioning:after {
 	clear: both
 }
 
+#forecast {
+	font-size: 24px;
+}
+
+table, th, td {
+	border: 1px solid;
+}
+
+.tablenoborders {
+	border: 0px solid;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
 ul li img {
 	height: 1em
 }

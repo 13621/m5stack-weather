@@ -34,8 +34,6 @@ def info():
                          temperature=rdscl.get_current_temperature(),
                          pressure_series=rdscl.get_pressure_series_three_hours())
 
-    forecast, zambretti_number = fc.get_forecast()
-
     zambretti_table = [] # [('steady', 0, 'fine'), ...]
 
     for p in ZAMBRETTI_VALUES.keys():
@@ -47,10 +45,7 @@ def info():
     graph_rgb_b64 = base64.b64encode(fc.get_pressure_graph()).decode('ascii')
 
     return render_template('info.html',
-                           pres=fc.pressure_sealevel,
-                           temp=fc.temperature,
-                           forecast=forecast,
-                           zambretti_number=zambretti_number,
+                           weather_fc=fc,
                            zambretti_table=zambretti_table,
                            plot=graph_rgb_b64)
 

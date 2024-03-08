@@ -11,28 +11,51 @@
 			<h1>Weather forecast</h1>
 		</header>
 		<div id="forecast">
-			<p>Forecast: {{ forecast }} (Zambretti number: {{ zambretti_number }})</p>
+			<p>Forecast: <b>{{ weather_fc.get_forecast()[0] }}</b> (Zambretti number: {{ weather_fc.get_forecast()[1] }})</p>
+		</div>
+		<div id="valuetable">
+                        <h2>Current data</h2>
+                        <table id="values" class="tablenoborders">
+				<tr>
+					<td>Elevation:</td>
+					<td>{{ weather_fc.elevation }} m</td>
+				</tr>
+				<tr>
+                                        <td>Current temperature:</td>
+                                        <td>{{ weather_fc.temperature }} K</td>
+                                </tr>
+                                <tr>
+                                        <td>Current pressure:</td>
+                                        <td>{{ weather_fc.pressure }} mbar</td>
+                                </tr>
+				<tr>
+                                        <td>Current pressure (at sea level):</td>
+                                        <td>{{ weather_fc.pressure_sealevel }} mbar</td>
+                                </tr>
+                        </table>
+                </div>
+		<div>
+			<h2>Pressure plot</h2>
+                        <img id="plot" src="data:image/png;base64,{{ plot }}"/>
+			<p>Rate of change: {{ weather_fc.pressure_linear_regressed_function_coefs()[0] *60*60*1000}} mbar/h (Pressure trend is {{ weather_fc.get_pressure_trend() }})</p>
+                </div>
+		<div>
+			<h2>Zambretti table reference</h2>
 			<table id="zambrettitable">
-				<tr>
-					<th>Pressure trend</th>
-					<th>Zambretti number</th>
-					<th>Forecast</th>
-				</tr>
-				{% for table_entry in zambretti_table %}
-				<tr>
-					{% for field in table_entry %}
-					<td>{{ field }}</td>
-					{% endfor %}
-				</tr>
-				{% endfor %}
-			</table>
-		</div>
-		<div id="plotdiv">
-			<img id="plot" src="data:image/png;base64,{{ plot }}"/>
-		</div>
-		<div id="cur_values">
-			<p>Current Temperature: {{ temp }} °K</p>
-			<p>Current Pressure (at sea level): {{ pres }} mbar</p>
+                                <tr>
+                                        <th>Pressure trend</th>
+                                        <th>Zambretti number</th>
+                                        <th>Forecast</th>
+                                </tr>
+                                {% for table_entry in zambretti_table %}
+                                <tr>
+                                        {% for field in table_entry %}
+                                        <td>{{ field }}</td>
+                                        {% endfor %}
+                                </tr>
+                                {% endfor %}
+                        </table>
+			<p>See <a href="https://github.com/sassoftware/iot-zambretti-weather-forcasting/blob/f2fc9ceab95bb472654749288fd57e4edda6c619/README.md">a SAS ESP example</a> for full tables and formulas.</p>
 		</div>
 	</body>
 </html>
