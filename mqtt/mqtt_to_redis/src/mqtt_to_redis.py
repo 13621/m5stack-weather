@@ -34,11 +34,8 @@ def main():
     client.on_connect = on_connect
     client.on_message = lambda *args: on_message(*args, timeseries=ts)
 
-    #client.username_pw_set(username=str(os.environ.get("MQTT_USERNAME")),
-    #                       password=str(os.environ.get("MQTT_PASSWORD")))
-
-    client.username_pw_set(username='testuser',
-                           password='m8zjQgeXw$62Pbz8zvWFAUrpcatkTB^3f$pLAma%Erh7&q*M')
+    client.username_pw_set(username=os.environ.get("MQTT_USERNAME"),
+                           password=os.environ.get("MQTT_PASSWORD"))
 
     #print("connecting...")
     client.connect(str(os.environ.get("MQTT_HOSTNAME")))
