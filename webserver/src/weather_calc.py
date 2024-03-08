@@ -2,6 +2,7 @@ import io
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from datetime import datetime
 
 
 ZAMBRETTI_VALUES = {
@@ -87,6 +88,7 @@ class WeatherForecast:
         x, y = zip(*self.pressure_series)
         fig, ax = plt.subplots()
         ax.scatter(x, y, s=1)
+
         # regression line
         xseq = np.arange(x[0], x[-1], 1000)
         fc = np.poly1d(self.pressure_linear_regressed_function_coefs())
@@ -94,7 +96,7 @@ class WeatherForecast:
 
         ax.set(xlabel='unix timestamp (millis)', 
                ylabel='air pressure (mbar)',
-               title='Air pressure')
+               title='Measured air pressure over time')
         ax.grid()
 
         output = io.BytesIO()
