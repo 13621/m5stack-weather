@@ -73,7 +73,7 @@ class WeatherForecast:
 
     @staticmethod
     def _get_pres_sealevel(pres: float, temp: float, height: float) -> float:
-        return pres * pow(( 1 - (0.0065*height)/(temp + 0.0065*height + 273.15) ), -5.257)
+        return pres * pow(( 1 - (0.0065*height)/(temp + 0.0065*height) ), -5.257)
 
 
     def pressure_linear_regressed_function_coefs(self):

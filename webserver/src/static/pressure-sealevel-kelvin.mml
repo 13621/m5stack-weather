@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+ <semantics>
+  <mrow>
+   <msub>
+    <mi>P</mi>
+    <mn>0</mn>
+   </msub>
+   <mo stretchy="false">=</mo>
+   <mrow>
+    <mi>P</mi>
+    <mo stretchy="false">∗</mo>
+    <msup>
+     <mrow>
+      <mo fence="true" form="prefix" stretchy="false">(</mo>
+      <mrow>
+       <mrow>
+        <mn>1</mn>
+        <mo stretchy="false">−</mo>
+        <mfrac>
+         <mrow>
+          <mn>0.0065</mn>
+          <mo stretchy="false">∗</mo>
+          <mi>h</mi>
+         </mrow>
+         <mrow>
+          <mi>T</mi>
+          <mo stretchy="false">+</mo>
+          <mrow>
+           <mn>0.0065</mn>
+           <mo stretchy="false">∗</mo>
+           <mi>h</mi>
+          </mrow>
+         </mrow>
+        </mfrac>
+       </mrow>
+      </mrow>
+      <mo fence="true" form="postfix" stretchy="false">)</mo>
+     </mrow>
+     <mrow>
+      <mo stretchy="false">−</mo>
+      <mn>5.257</mn>
+     </mrow>
+    </msup>
+   </mrow>
+  </mrow>
+  <annotation encoding="StarMath 5.0">P_0 = P*(1-{0.0065*h} over {T+0.0065*h})^-5.257</annotation>
+ </semantics>
+</math>

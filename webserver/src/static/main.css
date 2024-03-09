@@ -1,7 +1,7 @@
 body {
 	font-family: Open Sans, Arial;
 	color: #454545;
-	font-size: 18px;
+	font-size: 16px;
 	margin: 2em auto;
 	max-width: 800px;
 	padding: 1em;
@@ -216,18 +216,8 @@ a:visited {
 	user-select: none
 }
 
-span.citneed {
-	vertical-align: top;
-	font-size: .7em;
-	padding-left: .3em
-}
-
 small {
 	font-size: .4em
-}
-
-p.st {
-	margin-top: -1em
 }
 
 div.fancyPositioning div.picture-left {
@@ -268,11 +258,19 @@ div.fancyPositioning:after {
 	font-size: 24px;
 }
 
-table, th, td {
+table {
 	border: 1px solid;
 }
 
-.tablenoborders {
+th, td {
+	border: inherit;
+}
+
+tr.currentzambretti {
+	background-color: #90ee90;
+}
+
+table.tablenoborders {
 	border: 0px solid;
 }
 
@@ -364,16 +362,6 @@ span.visited-maroon {
 	color: #85144b
 }
 
-span.wr {
-	color: #c0392b;
-	font-weight: 600
-}
-
-button.cont-inv,
-span.wr {
-	text-decoration: underline
-}
-
 button.cont-inv {
 	cursor: pointer;
 	border-radius: 2px;
@@ -414,68 +402,4 @@ button.cont-inv {
 		position: absolute
 	}
 }
-
-span.sb {
-	color: #00e
-}
-
-span.sb,
-span.sv {
-	cursor: not-allowed
-}
-
-span.sv {
-	color: #551a8b
-}
-
-span.foufoufou {
-	color: #444;
-	font-weight: 700
-}
-
-span.foufoufou:before {
-	content: "";
-	display: inline-block;
-	width: 1em;
-	height: 1em;
-	margin-left: .2em;
-	margin-right: .2em;
-	background-color: #444
-}
-
-span.foufivfoufivfoufiv {
-	color: #454545;
-	font-weight: 700
-}
-
-span.foufivfoufivfoufiv:before {
-	content: "";
-	display: inline-block;
-	width: 1em;
-	height: 1em;
-	margin-left: .2em;
-	margin-right: .2em;
-	background-color: #454545
-}
-
-span.mfw {
-	color: #730000
-}
-
-a.kopimi,
-a.kopimi img.kopimi {
-	display: block;
-	margin-left: auto;
-	margin-right: auto
-}
-
-a.kopimi img.kopimi {
-	height: 2em
-}
-
-p.fakepre {
-	font-family: monospace;
-	font-size: .9em
-}
-
 

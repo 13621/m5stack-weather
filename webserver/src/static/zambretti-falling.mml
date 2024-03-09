@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+ <semantics>
+  <mrow>
+   <msub>
+    <mi>Z</mi>
+    <mi>f</mi>
+   </msub>
+   <mo stretchy="false">=</mo>
+   <mrow>
+    <mn>127</mn>
+    <mo stretchy="false">−</mo>
+    <mrow>
+     <mn>0.12</mn>
+     <mo stretchy="false">∗</mo>
+     <msub>
+      <mi>P</mi>
+      <mn>0</mn>
+     </msub>
+    </mrow>
+   </mrow>
+  </mrow>
+  <annotation encoding="StarMath 5.0">Z_f = 127 - 0.12*P_0</annotation>
+ </semantics>
+</math>

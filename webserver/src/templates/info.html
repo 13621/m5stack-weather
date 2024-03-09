@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 	<head>
 		<title>Weather forecast</title>
@@ -10,7 +10,7 @@
 		<header>
 			<h1>Weather forecast</h1>
 		</header>
-		<div id="forecast">
+		<div id="forecast" class="fancyPositioning">
 			<p>Forecast: <b>{{ weather_fc.get_forecast()[0] }}</b> (Zambretti number: {{ weather_fc.get_forecast()[1] }})</p>
 		</div>
 		<div id="valuetable">
@@ -26,36 +26,205 @@
                                 </tr>
                                 <tr>
                                         <td>Current pressure:</td>
-                                        <td>{{ weather_fc.pressure }} mbar</td>
+                                        <td>{{ weather_fc.pressure }} hPa</td>
                                 </tr>
 				<tr>
                                         <td>Current pressure (at sea level):</td>
-                                        <td>{{ weather_fc.pressure_sealevel }} mbar</td>
+                                        <td>{{ weather_fc.pressure_sealevel }} hPa</td>
                                 </tr>
                         </table>
                 </div>
 		<div>
 			<h2>Pressure plot</h2>
-                        <img id="plot" src="data:image/png;base64,{{ plot }}"/>
-			<p>Rate of change: {{ weather_fc.pressure_linear_regressed_function_coefs()[0] *60*60*1000}} mbar/h (Pressure trend is {{ weather_fc.get_pressure_trend() }})</p>
+                        <img id="plot" alt="Graph showing the recorded pressure over time. Each pressure measurement is shown as a dot. A linear regression line is also displayed." src="data:image/png;base64,{{ plot }}"/>
+			<p>Rate of change: {{ weather_fc.pressure_linear_regressed_function_coefs()[0] *60*60*1000}} hPa/h. This results in a {{ weather_fc.get_pressure_trend() }} pressure trend.</p>
                 </div>
 		<div>
-			<h2>Zambretti table reference</h2>
+			<h2>How the data is calculated</h2>
+				<p>The zambretti number is calculated using an algorithm, which is not based on common formulas in physics, but instead on empirical observations. It has been implemented in an instrument developed by the barometer company "Negretti and Zambra" in 1915. <a href="https://en.wikipedia.org/wiki/Zambretti_Forecaster">Read more</a></p>
+			<h3>Pressure at sea level</h3>
+				<p>Calculate the pressure at sea level using this formula, with T being the measured temperature in Kelvin and P the pressure in hPa (or mbars) at altitude h in meters.</p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+ <semantics>
+  <mrow>
+   <msub>
+    <mi>P</mi>
+    <mn>0</mn>
+   </msub>
+   <mo stretchy="false">=</mo>
+   <mrow>
+    <mi>P</mi>
+    <mo stretchy="false">∗</mo>
+    <msup>
+     <mrow>
+      <mo fence="true" form="prefix" stretchy="false">(</mo>
+      <mrow>
+       <mrow>
+        <mn>1</mn>
+        <mo stretchy="false">−</mo>
+        <mfrac>
+         <mrow>
+          <mn>0.0065</mn>
+          <mo stretchy="false">∗</mo>
+          <mi>h</mi>
+         </mrow>
+         <mrow>
+          <mi>T</mi>
+          <mo stretchy="false">+</mo>
+          <mrow>
+           <mn>0.0065</mn>
+           <mo stretchy="false">∗</mo>
+           <mi>h</mi>
+          </mrow>
+         </mrow>
+        </mfrac>
+       </mrow>
+      </mrow>
+      <mo fence="true" form="postfix" stretchy="false">)</mo>
+     </mrow>
+     <mrow>
+      <mo stretchy="false">−</mo>
+      <mn>5.257</mn>
+     </mrow>
+    </msup>
+   </mrow>
+  </mrow>
+  <annotation encoding="StarMath 5.0">P_0 = P*(1-{0.0065*h} over {T+0.0065*h})^-5.257</annotation>
+ </semantics>
+</math>
+			<h3>Determining a pressure trend</h3>
+				<p>Determine the pressure trend using the following table. Ideally, linear regression should be used to smoothen the trend.</p>
+				<table>
+					<tr>
+						<th>Pressure trend</th>
+						<th>Pressure at sea level</th>
+						<th>Change of pressure in 3 hours</th>
+					</tr>
+					{% for trend in pressure_trend_strings %}
+						{% if trend == weather_fc.get_pressure_trend() %}
+							<tr class="currentzambretti">
+						{% else %}
+							<tr>
+						{% endif %}
+								<td>{{ trend.capitalize() }}</td>
+						{%- if trend == "falling" -%}
+								<td>Between 985 hPa and 1050 hPa</td>
+								<td>Drop of 1.6 hPa</td>
+						{% endif %}
+						{%- if trend == "steady" -%}
+                                                        	<td>Between 960 hPa and 1033 hPa</td>
+                                                        	<td>No drop or rise of 1.6 hPa</td>
+                                                {% endif %}
+						{%- if trend == "rising" -%}
+                                                        	<td>Between 947 hPa and 1030 hPa</td>
+                                                        	<td>Rise of 1.6 hPa</td>
+                                                {% endif %}
+						{%- if trend == "unknown" -%}
+                                                        	<td>otherwise</td>
+                                                        	<td>otherwise</td>
+                                                {% endif %}
+							</tr>
+					{% endfor %}
+				</table>
+			<h3>Calculating the zambretti number</h3>
+			<p>Calculate the forecast number Z with the formula corresponding to the pressure trend.</p>
+			<h4>Falling pressure</h4>
+			<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+ <semantics>
+  <mrow>
+   <msub>
+    <mi>Z</mi>
+    <mi>f</mi>
+   </msub>
+   <mo stretchy="false">=</mo>
+   <mrow>
+    <mn>127</mn>
+    <mo stretchy="false">−</mo>
+    <mrow>
+     <mn>0.12</mn>
+     <mo stretchy="false">∗</mo>
+     <msub>
+      <mi>P</mi>
+      <mn>0</mn>
+     </msub>
+    </mrow>
+   </mrow>
+  </mrow>
+  <annotation encoding="StarMath 5.0">Z_f = 127 - 0.12*P_0</annotation>
+ </semantics>
+</math>
+			<h4>Steady pressure</h4>
+			<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+ <semantics>
+  <mrow>
+   <msub>
+    <mi>Z</mi>
+    <mi>s</mi>
+   </msub>
+   <mo stretchy="false">=</mo>
+   <mrow>
+    <mn>144</mn>
+    <mo stretchy="false">−</mo>
+    <mrow>
+     <mn>0.13</mn>
+     <mo stretchy="false">∗</mo>
+     <msub>
+      <mi>P</mi>
+      <mn>0</mn>
+     </msub>
+    </mrow>
+   </mrow>
+  </mrow>
+  <annotation encoding="StarMath 5.0">Z_s = 144 - 0.13*P_0</annotation>
+ </semantics>
+</math>
+			<h4>Rising pressure</h4>
+			<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+ <semantics>
+  <mrow>
+   <msub>
+    <mi>Z</mi>
+    <mi>r</mi>
+   </msub>
+   <mo stretchy="false">=</mo>
+   <mrow>
+    <mn>185</mn>
+    <mo stretchy="false">−</mo>
+    <mrow>
+     <mn>0.16</mn>
+     <mo stretchy="false">∗</mo>
+     <msub>
+      <mi>P</mi>
+      <mn>0</mn>
+     </msub>
+    </mrow>
+   </mrow>
+  </mrow>
+  <annotation encoding="StarMath 5.0">Z_r = 185 - 0.16*P_0</annotation>
+ </semantics>
+</math>
+			<h3>Look up forecast in table</h3>
+			<p>Round the resulting number, and then look up your forecast in the following table:</p>
 			<table id="zambrettitable">
                                 <tr>
                                         <th>Pressure trend</th>
                                         <th>Zambretti number</th>
                                         <th>Forecast</th>
                                 </tr>
-                                {% for table_entry in zambretti_table %}
-                                <tr>
+				{% for table_entry in zambretti_table %}
+					{% if table_entry[1] == weather_fc.get_forecast()[1] %}
+                                		<tr class="currentzambretti">
+					{% else %}
+						<tr>
+					{% endif %}
                                         {% for field in table_entry %}
-                                        <td>{{ field }}</td>
+						<td>{{ field }}</td>
                                         {% endfor %}
                                 </tr>
                                 {% endfor %}
                         </table>
-			<p>See <a href="https://github.com/sassoftware/iot-zambretti-weather-forcasting/blob/f2fc9ceab95bb472654749288fd57e4edda6c619/README.md">a SAS ESP example</a> for full tables and formulas.</p>
+			<h3>References</h3>
+			<p>See <a href="https://github.com/sassoftware/iot-zambretti-weather-forcasting/blob/f2fc9ceab95bb472654749288fd57e4edda6c619/README.md">a SAS ESP example</a> for a more detailed explanation of the algorithm. All formulas and tables are taken from there.</p>
 		</div>
 	</body>
 </html>

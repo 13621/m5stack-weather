@@ -47,6 +47,7 @@ def info():
     return render_template('info.html',
                            weather_fc=fc,
                            zambretti_table=zambretti_table,
+                           pressure_trend_strings=list(ZAMBRETTI_VALUES.keys()),
                            plot=graph_rgb_b64)
 
 
