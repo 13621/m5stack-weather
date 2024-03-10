@@ -9,11 +9,14 @@ from .weather_calc import WeatherForecast, ZAMBRETTI_VALUES
 
 
 app = Flask(__name__)
-rdscl = RedisClient(os.environ.get("REDIS_HOSTNAME"), int(os.environ.get("REDIS_PORT")))
+rdscl = RedisClient(os.environ.get("REDIS_HOSTNAME"), 
+                    int(os.environ.get("REDIS_PORT")))
 
 
-@app.route('/')
-def root():
+@app.route('/<path:prefix>')
+def root(prefix):
+    rdscl.set_prefix(prefix)
+
     curtemp = rdscl.get_current_temperature()
 
     fc = WeatherForecast(elevation=22,
@@ -28,8 +31,10 @@ def root():
                            forecast=forecast)
 
 
-@app.route('/info')
-def info():
+@app.route('/<path:prefix>/info')
+def info(prefix):
+    rdscl.set_prefix(prefix)
+
     fc = WeatherForecast(elevation=22,
                          temperature=rdscl.get_current_temperature(),
                          pressure_series=rdscl.get_pressure_series_three_hours())
@@ -48,7 +53,8 @@ def info():
                            weather_fc=fc,
                            zambretti_table=zambretti_table,
                            pressure_trend_strings=list(ZAMBRETTI_VALUES.keys()),
-                           plot=graph_rgb_b64)
+                           plot=graph_rgb_b64,
+                           humidity=fc.get_current_humidity())
 
 
 def main():

@@ -30,11 +30,18 @@ def main():
         now_time_ms = (time.time() - begin_time) * 1000
         proj_pressure = pressure_function(now_time_ms)
 
-        topics = ('test/temp', 'test/pres')
-        payloads = (randint(-5, 30), proj_pressure)
+        topics = ('niclasjann/bmp280/temp', 
+                  'niclasjann/bmp280/press', 
+                  'niclasjann/dht12/temp',
+                  'niclasjann/dht12/humi')
+        payloads = (randint(-5, 30), 
+                    proj_pressure,
+                    randint(-5, 30),
+                    randint(0, 100))
+
         for i, t in enumerate(topics):
             client.publish(t, payloads[i])
-            #print("published", payloads[i], "in topic", t)
+            time.sleep(randint(0, 10) / 10)
         time.sleep(randint(0, 2))
 
 

@@ -9,26 +9,25 @@ from redis import Redis
 
 def on_connect(client, userdata, flags, rc, *args):
     print(f"connected to MQTT ({rc})")
-    client.subscribe('test/+')
+    client.subscribe('+/#')
 
 def on_message(client, userdata, msg, timeseries, *args):
     current_unix_timestamp = time.time()
     
-    ts_key = msg.topic.split('/')[1]
+    ts_key = ":".join(msg.topic.split('/'))
     value = float(msg.payload)
 
+    try:
+        ts.create(ts_key, retention_msecs=3*60*60*1000)
+    except:
+        pass
+
     timeseries.add(ts_key, "*", value, duplicate_policy='LAST')
-    #print("added", timeseries.get(ts_key), "to Redis")
 
 
 def main():
     rds = Redis(host=str(os.environ.get("REDIS_HOSTNAME")), port=int(os.environ.get("REDIS_PORT")))
     ts = rds.ts()
-    
-    try:
-        [ts.create(t, retention_msecs=3*60*60*1000) for t in ('temp', 'pres')]
-    except:
-        pass
 
     client = Client(CallbackAPIVersion.VERSION2)
     client.on_connect = on_connect
@@ -37,7 +36,6 @@ def main():
     client.username_pw_set(username=os.environ.get("MQTT_USERNAME"),
                            password=os.environ.get("MQTT_PASSWORD"))
 
-    #print("connecting...")
     client.connect(str(os.environ.get("MQTT_HOSTNAME")))
 
     client.loop_forever()
