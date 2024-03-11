@@ -30,7 +30,7 @@ version_label.setText('v'+sys.version)
 i2c = I2C(1, scl=Pin(22), sda=Pin(21), freq=400000)
 bmp = bmp280.BMP280(i2c)
 
-m5mqtt = M5mqtt('board', MQTT_HOSTNAME, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, 300)
+m5mqtt = M5mqtt('board', MQTT_HOSTNAME, 1883, MQTT_USERNAME, MQTT_PASSWORD, 300)
 m5mqtt.start()
 
 mqttbasetopic = 'niclasjann'

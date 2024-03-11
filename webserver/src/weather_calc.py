@@ -65,23 +65,19 @@ class WeatherForecast:
         self.pressure_series = pressure_series
         self.pressure_sealevel = self._get_pres_sealevel(self.pressure, self.temperature, self.elevation)
 
-
     @staticmethod
     def _get_temp_kelvin(temp_c: float) -> float:
         return temp_c + 273.15
 
-
     @staticmethod
     def _get_pres_sealevel(pres: float, temp: float, height: float) -> float:
         return pres * pow(( 1 - (0.0065*height)/(temp + 0.0065*height) ), -5.257)
-
 
     def pressure_linear_regressed_function_coefs(self):
         if not getattr(self, '_pressure_coefs', None):
             x, y = zip(*self.pressure_series)
             self._pressure_coefs = list(np.polyfit(x, y, 1))
         return self._pressure_coefs
-
 
     def get_pressure_graph(self):
         # scatter plot
@@ -104,22 +100,20 @@ class WeatherForecast:
 
         return output.getvalue()
 
-
     def get_pressure_trend(self) -> str:
         diff = self.pressure_linear_regressed_function_coefs()[0] *3*60*60*1000 # slope of function over 3 hours
 
-        if self.pressure_sealevel < 1050 and self.pressure_sealevel > 985 and diff <= -1.6:
+        if 1050 > self.pressure_sealevel > 985 and diff <= -1.6:
             # between values and fall of 1.6 mbar
             return 'falling'
 
-        if self.pressure_sealevel < 1030 and self.pressure_sealevel > 947 and diff >= 1.6:
+        if 1030 > self.pressure_sealevel > 947 and diff >= 1.6:
             return 'rising'
 
-        if self.pressure_sealevel < 1033 and self.pressure_sealevel > 960:# and (diff < 1.6 or diff > -1.6):
+        if 1033 > self.pressure_sealevel > 960:# and (diff < 1.6 or diff > -1.6):
             return 'steady'
 
         return 'unknown'
-
 
     def get_forecast(self) -> tuple[str, int]:
         factor_a, factor_b = ZAMBRETTI_CALC_FACTORS[self.get_pressure_trend()]
@@ -128,4 +122,3 @@ class WeatherForecast:
         forecast = ZAMBRETTI_VALUES[self.get_pressure_trend()][zambretti_number]
 
         return forecast, zambretti_number
-

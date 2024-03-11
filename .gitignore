@@ -1,4 +1,6 @@
 .direnv
+.idea
 .env
 result
 __pycache__
+*.tar.gz

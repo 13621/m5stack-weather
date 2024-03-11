@@ -18,19 +18,21 @@ services:
     networks:
       - db
     environment:
+      PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
       REDIS_HOSTNAME: ${REDIS_HOSTNAME}
       REDIS_PORT: ${REDIS_PORT}
       MQTT_HOSTNAME: ${MQTT_HOSTNAME}
       MQTT_USERNAME: ${MQTT_USERNAME}
       MQTT_PASSWORD: ${MQTT_PASSWORD}
 
-  mqtt_dummy_publisher:
-    image: mqtt_dummy_publisher
-    restart: unless-stopped
-    environment:
-      MQTT_HOSTNAME: ${MQTT_HOSTNAME}
-      MQTT_USERNAME: ${MQTT_USERNAME}
-      MQTT_PASSWORD: ${MQTT_PASSWORD}
+#  mqtt_dummy_publisher:
+#    image: mqtt_dummy_publisher
+#    restart: unless-stopped
+#    environment:
+#      PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
+#      MQTT_HOSTNAME: ${MQTT_HOSTNAME}
+#      MQTT_USERNAME: ${MQTT_USERNAME}
+#      MQTT_PASSWORD: ${MQTT_PASSWORD}
 
   webserver:
     image: cot_webserver_prod:latest

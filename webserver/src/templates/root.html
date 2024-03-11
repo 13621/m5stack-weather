@@ -11,7 +11,7 @@
 			<h1>Weather forecast</h1>
 		</header>
 		<div id="forecast" class="fancyPositioning">
-			<p>Forecast: <b>{{ forecast }}</b> <small><a href="{{ url_for('info') }}">More info</a></small></p>
+			<p>Forecast: <b>{{ forecast }}</b> <small><a href="{{ url_for('info', prefix=pf) }}">More info</a></small></p>
 		</div>
 		<div id="valuetable">
 			<h2>Current data</h2>

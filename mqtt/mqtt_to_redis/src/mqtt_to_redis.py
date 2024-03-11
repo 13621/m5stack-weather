@@ -11,6 +11,7 @@ def on_connect(client, userdata, flags, rc, *args):
     print(f"connected to MQTT ({rc})")
     client.subscribe('+/#')
 
+
 def on_message(client, userdata, msg, timeseries, *args):
     current_unix_timestamp = time.time()
     
@@ -18,11 +19,13 @@ def on_message(client, userdata, msg, timeseries, *args):
     value = float(msg.payload)
 
     try:
-        ts.create(ts_key, retention_msecs=3*60*60*1000)
+        timeseries.create(ts_key, retention_msecs=3*60*60*1000)
     except:
         pass
 
     timeseries.add(ts_key, "*", value, duplicate_policy='LAST')
+
+    print(f"{msg.topic} : {value} => {ts_key} : {timeseries.get(ts_key)}")
 
 
 def main():

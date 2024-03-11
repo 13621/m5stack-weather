@@ -7,6 +7,7 @@ from random import randint
 from paho.mqtt.client import Client
 from paho.mqtt.enums import CallbackAPIVersion
 
+
 def on_connect(client, userdata, flags, rc, *args):
     print(f"connected ({rc})")
 
