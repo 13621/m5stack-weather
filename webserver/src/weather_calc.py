@@ -59,11 +59,12 @@ ZAMBRETTI_CALC_FACTORS = {
 
 class WeatherForecast:
     def __init__(self, elevation: int, temperature: int, pressure_series: list[tuple[int, float]]):
-        self.elevation = elevation
-        self.temperature = self._get_temp_kelvin(temperature)
-        self.pressure = pressure_series[-1][1]
+        self.elevation = elevation if elevation else None
+        self.temperature = self._get_temp_kelvin(temperature) if temperature else None
+        self.pressure = pressure_series[-1][1] if len(pressure_series) > 1 else None
         self.pressure_series = pressure_series
-        self.pressure_sealevel = self._get_pres_sealevel(self.pressure, self.temperature, self.elevation)
+        self.pressure_sealevel = self._get_pres_sealevel(self.pressure, self.temperature, self.elevation) \
+            if self.pressure and self.temperature and self.elevation else None
 
     @staticmethod
     def _get_temp_kelvin(temp_c: float) -> float:

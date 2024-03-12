@@ -29,10 +29,18 @@ def basic(prefix):
         return redirect(url_for('root'))
 
     curtemp = rdscl.get_current_temperature()
+    series = rdscl.get_pressure_series_three_hours()
+
+    if not (curtemp and series):
+        return render_template('root.html',
+                               pf=prefix,
+                               pres='No data!',
+                               temp='No data!',
+                               forecast='No data!')
 
     fc = WeatherForecast(elevation=22,
                          temperature=curtemp,
-                         pressure_series=rdscl.get_pressure_series_three_hours())
+                         pressure_series=series)
 
     forecast, _ = fc.get_forecast()
 
@@ -53,8 +61,19 @@ def info(prefix):
         # id not found
         return redirect(url_for('root'))
 
+    curtemp = rdscl.get_current_temperature()
+    series = rdscl.get_pressure_series_three_hours()
+
+    if not (curtemp and series):
+        return render_template('info.html',
+                               weather_fc=None,
+                               zambretti_table=['No data!', 'No data!', 'No data!'],
+                               pressure_trend_strings=['No data!'],
+                               plot=None,
+                               humidity=None)
+
     fc = WeatherForecast(elevation=22,
-                         temperature=rdscl.get_current_temperature(),
+                         temperature=curtemp,
                          pressure_series=rdscl.get_pressure_series_three_hours())
 
     zambretti_table = [] # [('steady', 0, 'fine'), ...]

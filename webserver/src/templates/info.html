@@ -11,18 +11,18 @@
 			<h1>Weather forecast</h1>
 		</header>
 		<div id="forecast" class="fancyPositioning">
-			<p>Forecast: <b>{{ weather_fc.get_forecast()[0] }}</b> (Zambretti number: {{ weather_fc.get_forecast()[1] }})</p>
+			<p>Forecast: <b>{{ weather_fc.get_forecast()[0] if weather_fc else None }}</b> (Zambretti number: {{ weather_fc.get_forecast()[1] if weather_fc else None }})</p>
 		</div>
 		<div id="valuetable">
                         <h2>Current data</h2>
                         <table id="values" class="tablenoborders">
 				<tr>
 					<td>Elevation:</td>
-					<td>{{ weather_fc.elevation }} m</td>
+					<td>{{ weather_fc.elevation if weather_fc else None }} m</td>
 				</tr>
 				<tr>
                                         <td>Current temperature:</td>
-                                        <td>{{ weather_fc.temperature }} K</td>
+                                        <td>{{ weather_fc.temperature if weather_fc else None }} K</td>
                                 </tr>
 				<tr>
 					<td>Current relative humidity:</td>	
@@ -30,18 +30,18 @@
 				</tr>
                                 <tr>
                                         <td>Current pressure:</td>
-                                        <td>{{ weather_fc.pressure }} hPa</td>
+                                        <td>{{ weather_fc.pressure if weather_fc else None }} hPa</td>
                                 </tr>
 				<tr>
                                         <td>Current pressure (at sea level):</td>
-                                        <td>{{ weather_fc.pressure_sealevel }} hPa</td>
+                                        <td>{{ weather_fc.pressure_sealevel if weather_fc else None }} hPa</td>
                                 </tr>
                         </table>
                 </div>
 		<div>
 			<h2>Pressure plot</h2>
                         <img id="plot" alt="Graph showing the recorded pressure over time. Each pressure measurement is shown as a dot. A linear regression line is also displayed." src="data:image/png;base64,{{ plot }}"/>
-			<p>Rate of change: {{ weather_fc.pressure_linear_regressed_function_coefs()[0] *60*60*1000}} hPa/h. This results in a {{ weather_fc.get_pressure_trend() }} pressure trend.</p>
+			<p>Rate of change: {{ weather_fc.pressure_linear_regressed_function_coefs()[0] *60*60*1000 if weather_fc else None}} hPa/h. This results in a {{ weather_fc.get_pressure_trend() if weather_fc else None }} pressure trend.</p>
                 </div>
 		<div>
 			<h2>How the data is calculated</h2>
@@ -105,7 +105,7 @@
 						<th>Change of pressure in 3 hours</th>
 					</tr>
 					{% for trend in pressure_trend_strings %}
-						{% if trend == weather_fc.get_pressure_trend() %}
+						{% if not weather_fc or trend == weather_fc.get_pressure_trend() %}
 							<tr class="currentzambretti">
 						{% else %}
 							<tr>
@@ -216,7 +216,7 @@
                                         <th>Forecast</th>
                                 </tr>
 				{% for table_entry in zambretti_table %}
-					{% if table_entry[1] == weather_fc.get_forecast()[1] %}
+					{% if not weather_fc or table_entry[1] == weather_fc.get_forecast()[1] %}
                                 		<tr class="currentzambretti">
 					{% else %}
 						<tr>

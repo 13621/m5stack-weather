@@ -36,8 +36,16 @@ m5mqtt.start()
 mqttbasetopic = 'niclasjann'
 
 while True:
+  data = bmp_temp = bmp_press = None
+  try:
+    data = i2c.readfrom_mem(0x5c, 0x00, 5)
+    bmp_temp, bmp_press = bmp.values
+  except:
+    wait_ms(5000)
+    continue
+
   # DHT12 TEMPERATURE, HUMIDITY
-  data = i2c.readfrom_mem(0x5c, 0x00, 5)
+
   # |   0x00  |  0x01   |   0x02  |   0x03  |   0x04  | 
   # | hum_int | hum_dec | temp_int| temp_dec| checksum|
 
@@ -53,7 +61,6 @@ while True:
     m5mqtt.publish(mqttbasetopic + '/dht12/humi', str(hum))
 
   # BMP280 TEMPERATURE, PRESSURE
-  bmp_temp, bmp_press = bmp.values
 
   bmp_temp_label.setText(str(bmp_temp)+' C')
   press_label.setText(str(bmp_press)+' hPa')
@@ -61,4 +68,4 @@ while True:
   m5mqtt.publish(mqttbasetopic + '/bmp280/temp', str(bmp_temp))
   m5mqtt.publish(mqttbasetopic + '/bmp280/press', str(bmp_press))
  
-  wait_ms(5000)
+  wait_ms(1000)
