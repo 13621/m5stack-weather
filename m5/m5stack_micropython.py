@@ -5,6 +5,7 @@ from m5mqtt import M5mqtt
 from machine import Pin, I2C
 import sys
 import bmp280
+import wifiCfg
 
 
 MQTT_HOSTNAME = "fixme"
@@ -12,10 +13,19 @@ MQTT_PORT = 1883
 MQTT_USERNAME = "fixme"
 MQTT_PASSWORD = "fixme"
 
+WIFI_SSID = "fixme"
+WIFI_PSK = "fixme"
+
 setScreenColor(0x222222)
 
 speaker.setVolume(0.1)
 speaker.sing(220, 1)
+
+wifiCfg.doConnect(WIFI_SSID, WIFI_PSK)
+while not wifiCfg.wlan_sta.isconnected():
+  wait_ms(200)
+
+speaker.sing(500, 1)
 
 data = bytearray(5)
 
@@ -56,8 +66,8 @@ while True:
 
     temp_label.setText(str(temp) + ' C')
     humi_label.setText(str(hum) + ' %')
-  
-    m5mqtt.publish(mqttbasetopic +  '/dht12/temp', str(temp))
+
+    m5mqtt.publish(mqttbasetopic + '/dht12/temp', str(temp))
     m5mqtt.publish(mqttbasetopic + '/dht12/humi', str(hum))
 
   # BMP280 TEMPERATURE, PRESSURE
@@ -67,5 +77,5 @@ while True:
 
   m5mqtt.publish(mqttbasetopic + '/bmp280/temp', str(bmp_temp))
   m5mqtt.publish(mqttbasetopic + '/bmp280/press', str(bmp_press))
- 
+
   wait_ms(1000)
